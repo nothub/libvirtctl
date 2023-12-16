@@ -1,4 +1,4 @@
-package main
+package prune
 
 import (
 	"fmt"
@@ -9,19 +9,15 @@ import (
 	"github.com/digitalocean/go-libvirt"
 )
 
-func init() {
-	log.SetFlags(0)
-}
-
-func main() {
-	c, err := net.DialTimeout("unix", "/var/run/libvirt/libvirt-sock", 2*time.Second)
+func Run(args []string) {
+	c, err := net.DialTimeout("unix", "/var/run/libvirt/libvirt-sock", 3*time.Second)
 	if err != nil {
-		log.Fatalf("failed to dial libvirt; %v", err)
+		log.Fatalf("failed to dial libvirt socket; %v", err)
 	}
 
 	l := libvirt.New(c)
 	if err := l.Connect(); err != nil {
-		log.Fatalf("failed to connect; %v", err)
+		log.Fatalf("failed to connect libvirt rpc; %v", err)
 	}
 
 	h, err := l.ConnectGetHostname()
