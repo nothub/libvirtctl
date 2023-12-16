@@ -10,13 +10,15 @@ import (
 )
 
 func Run(args []string) {
-	c, err := net.DialTimeout("unix", "/var/run/libvirt/libvirt-sock", 3*time.Second)
+	// systemSocket := "/var/run/libvirt/libvirt-sock"
+	userSocket := "/run/user/1000/libvirt/libvirt-sock"
+	c, err := net.DialTimeout("unix", userSocket, 3*time.Second)
 	if err != nil {
 		log.Fatalf("failed to dial libvirt socket; %v", err)
 	}
 
 	l := libvirt.New(c)
-	if err := l.Connect(); err != nil {
+	if err := l.ConnectToURI(libvirt.QEMUSession); err != nil {
 		log.Fatalf("failed to connect libvirt rpc; %v", err)
 	}
 
