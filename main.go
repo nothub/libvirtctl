@@ -33,6 +33,7 @@ func main() {
 	fmt.Println("Version:", v)
 
 	listNetworks(l)
+	listPools(l)
 	listDomains(l)
 
 	if err := l.Disconnect(); err != nil {
@@ -41,7 +42,8 @@ func main() {
 }
 
 func listNetworks(l *libvirt.Libvirt) {
-	nets, _, err := l.ConnectListAllNetworks(0, 0)
+	// https://libvirt.org/html/libvirt-libvirt-network.html#virConnectListAllNetworks
+	nets, _, err := l.ConnectListAllNetworks(1, libvirt.ConnectListNetworksActive|libvirt.ConnectListNetworksInactive)
 	if err != nil {
 		log.Fatalf("failed to retrieve networks: %v", err)
 	}
@@ -50,6 +52,21 @@ func listNetworks(l *libvirt.Libvirt) {
 	fmt.Println("\tName\t\tUUID")
 	fmt.Printf("--------------------------------\n")
 	for _, n := range nets {
+		fmt.Printf("%s\t%x\n", n.Name, n.UUID)
+	}
+}
+
+func listPools(l *libvirt.Libvirt) {
+	// https://libvirt.org/html/libvirt-libvirt-storage.html#virConnectListAllStoragePools
+	pools, _, err := l.ConnectListAllStoragePools(1, libvirt.ConnectListStoragePoolsActive|libvirt.ConnectListStoragePoolsInactive)
+	if err != nil {
+		log.Fatalf("failed to retrieve storage pools: %v", err)
+	}
+
+	fmt.Println("POOLS:")
+	fmt.Println("\tName\t\tUUID")
+	fmt.Printf("--------------------------------\n")
+	for _, n := range pools {
 		fmt.Printf("%s\t%x\n", n.Name, n.UUID)
 	}
 }
