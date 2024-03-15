@@ -10,9 +10,9 @@ import (
 )
 
 func Run(args []string) {
-	// systemSocket := "/var/run/libvirt/libvirt-sock"
-	userSocket := "/run/user/1000/libvirt/libvirt-sock"
-	c, err := net.DialTimeout("unix", userSocket, 3*time.Second)
+	systemSocket := "/var/run/libvirt/libvirt-sock"
+	// userSocket := "/run/user/1000/libvirt/libvirt-sock"
+	c, err := net.DialTimeout("unix", systemSocket, 3*time.Second)
 	if err != nil {
 		log.Fatalf("failed to dial libvirt socket; %v", err)
 	}

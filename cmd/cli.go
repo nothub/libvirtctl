@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"hub.lol/libvirt/cmd/prune"
+	"hub.lol/libvirtctl/cmd/prune"
 )
 
 func init() {

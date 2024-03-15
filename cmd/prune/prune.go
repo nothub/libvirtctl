@@ -89,9 +89,17 @@ func removePools(l *libvirt.Libvirt) {
 	}
 
 	for _, p := range pools {
+		vols, _, err := l.StoragePoolListAllVolumes(p, 0, 0)
+		if err != nil {
+			log.Fatalf("failed to retrieve volumes; %v", err)
+		}
+		for _, vol := range vols {
+			log.Println(vol.Name)
+		}
+
 		log.Printf("removing pool %s (%x)\n", p.Name, p.UUID)
 		// https://libvirt.org/html/libvirt-libvirt-storage.html#virStoragePoolDestroy
-		err := l.StoragePoolUndefine(p)
+		err = l.StoragePoolUndefine(p)
 		if err != nil {
 			log.Fatalf("failed to remove pool; %v", err)
 		}
